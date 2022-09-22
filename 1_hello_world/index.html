@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <title>Predicción de un valor en una red neuronal de una neurona</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+      #resultado {
+        font-weight:  bold;
+        font-size:  1.2rem;
+        text-align: center;
+      }
+
+      h1 {text-align: center;}
+      p {text-align: center;}
+
+
+    </style>
+
+  </head>
+  <body>
+<div class="container">
+
+  <h1>Predicción del ejemplo 0</h1>
+  <p>Se podrá predecir en base a los números ingresados. Recordar que la función lineal es 2x-1</p>
+
+
+    <main>
+<br><br>
+
+      <form onsubmit="return cambiarValor(this)">
+
+          <label for="name">Valor a predecir:</label>
+          <input type="text" class="form-control" id="widget_valor"  placeholder="Ingrese valor a predecir">
+
+
+        <button type="submit"  class="btn btn-primary" id="button" name="value">Predecir</button>
+
+
+      </form>
+
+      <div id="resultado">
+        El resultado estimado es...
+      </div>
+
+    </main>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+
+    <script type="text/javascript">
+
+      var modelo = null;
+
+      //Cargar modelo
+      (async () => {
+          console.log("Cargando modelo...");
+          modelo = await tf.loadLayersModel("model.json");
+          console.log("Modelo cargado...");
+      })();
+
+      function cambiarValor() {
+        event.preventDefault();
+        var valor = document.getElementById("widget_valor").value;
+        console.log(valor);
+        if (modelo != null) {
+          var tensor = tf.tensor1d([parseInt(valor)]);
+
+          var prediccion = modelo.predict(tensor).dataSync();
+          //prediccion = Math.round(prediccion, 1);
+          console.log(prediccion);
+          document.getElementById("resultado").innerHTML = valor + " de la prediccion es " + prediccion ;
+        } else {
+          document.getElementById("resultado").innerHTML = "Intenta de nuevo en un momento...";
+        }
+      }
+    </script>
+
+  </body>
+</html>
